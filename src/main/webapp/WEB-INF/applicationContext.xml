@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:s="http://www.springframework.org/schema/security" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd 
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd 
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd ">
+
+	<context:annotation-config />
+	<context:component-scan base-package="hu.itv.services" annotation-config="true" />
+	
+	<context:property-placeholder location="classpath*:application.properties" ignore-resource-not-found="true"/>
+	
+	<bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">
+	    <property name="connectionFactory" ref="amqConnectionFactory" />
+	    <property name="receiveTimeout" value="1500" />
+	</bean>
+	
+	<bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="${jms.amq.url}" />
+		<property name="userName" value="${jms.amq.user}"/>
+		<property name="password" value="${jms.amq.password}" />
+	</bean>
+	
+	<bean id="amqJmsQueueConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+	    <property name="targetConnectionFactory" ref="amqConnectionFactory"/>
+	</bean>
+	
+	<bean id="InQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    	<constructor-arg index="0" value="${in.queue}" />
+  	</bean>
+  	
+  	<bean id="OutQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    	<constructor-arg index="0" value="${out.queue}" />
+  	</bean>
+  	
+  	<!-- ============================================================= JMS MESSAGE LISTENER CONTAINER ============================================================= -->
+	
+	<bean id="myMessageListener" class="hu.itv.services.MyMDB" />
+	
+	<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="amqJmsQueueConnectionFactory"/>
+	    <property name="destination" ref="InQueue"/>
+	    <property name="messageListener" ref="myMessageListener" />
+	</bean>
+
+</beans>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://hu.itv/SampleService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="SampleService" targetNamespace="http://hu.itv/SampleService">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://hu.itv/SampleService">
+			<xsd:include schemaLocation="Sample.xsd"/>
+		</xsd:schema>
+		<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<xsd:import namespace="http://hu.itv/SampleService" schemaLocation="Sample.xsd">
+			</xsd:import>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="echoRequest">
+		<wsdl:part name="parameters" element="tns:echoRequest"/>
+	</wsdl:message>
+	<wsdl:message name="echoResponse">
+		<wsdl:part name="parameters" element="tns:echoResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="SampleService">
+		<wsdl:operation name="echoRequest">
+			<wsdl:input name="echoRequest" message="tns:echoRequest"/>
+			<wsdl:output name="echoResponse" message="tns:echoResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="SampleServiceSOAP" type="tns:SampleService">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="echoRequest">
+			<soap:operation soapAction="http://hu.itv/SampleService/echo"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="SampleService">
+		<wsdl:port name="SampleServiceSOAP" binding="tns:SampleServiceSOAP">
+			<soap:address location="http://localhost/SampleService"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

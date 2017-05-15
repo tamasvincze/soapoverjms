@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://hu.itv/SampleService"
+	targetNamespace="http://hu.itv/SampleService"
+	elementFormDefault="qualified">
+	<element name="echoRequest">
+		<complexType>
+			<sequence>
+				<element name="input" type="xsd:string" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="echoResponse">
+		<complexType>
+			<sequence>
+				<element name="output" type="xsd:string" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>
