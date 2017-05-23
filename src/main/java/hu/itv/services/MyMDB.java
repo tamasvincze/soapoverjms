@@ -1,32 +1,28 @@
 package hu.itv.services;
 
+import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.jms.BytesMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-
-@Component
+//@Component
 public class MyMDB implements MessageListener {
 	
-	public static final Logger LOG = Logger.getLogger(MyMDB.class);
+	public static final Logger LOG = Logger.getLogger(MyMDB.class.toString());
 	
 	@PostConstruct
 	public void onInit(){
-		LOG.info("======\nMDB started!\n======");
-		System.out.println("------------------------------- START");
+		LOG.info("======MDB started!======");
 	}
 	
 	@Override
 	public void onMessage(Message message) {
-		LOG.info("-------\nStart\n-------");
-		System.out.println("-------\nStart\n-------");
+		LOG.info("-------Start-------");
 		try {
 			LOG.info("BE");
-			System.out.println("BE");
 			if (message instanceof TextMessage || message instanceof BytesMessage) {
 
 				String messageString = null;
@@ -37,14 +33,11 @@ public class MyMDB implements MessageListener {
 //					messageString = new String(message.getBody(byte[].class));
 				}
 				LOG.info("message = " + messageString);
-				System.out.println("message = " + messageString);
 			}
 		} catch (Exception e) {
-			LOG.error("Error!", e);
-			System.err.println("ERROR: " + e.getMessage());
+			LOG.severe("Error! " + e.getMessage());
 		}
 		
-		System.out.println("Done");
-		LOG.debug("Done");	
+		LOG.fine("Done");	
 	}
 }
