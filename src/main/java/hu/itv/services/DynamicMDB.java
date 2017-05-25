@@ -9,29 +9,28 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.xml.bind.JAXBContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-
-//@Component
-public class DynamicMDB extends SpringBeanAutowiringSupport implements MessageListener {
+/**
+ * Dynamic message driven bean.
+ * Can be initialized with the Container, with a properly setup MDBListInitializator list bean.
+ * The dynamic MDB uses a fixed service class, as the source and target format for the incoming messages.
+ * The messages will be converted with JAXBContext.
+ * 
+ * @see Container
+ * @see JAXBContext
+ * @author tamas.vincze
+ *
+ */
+public class DynamicMDB implements MessageListener {
 	
 	public static final Logger LOG = Logger.getLogger(DynamicMDB.class.toString());
 	
-//	@Autowired
-//	@Qualifier("InQueue")
-//	private Destination destination;
-
 	private String defaultResponseQueue;
-
 	private String serviceName;
-	
-	//TODO: the jmsTemplate will send out 
-	@Autowired
 	private JmsTemplate jmsTemplate;
 	
 	@PostConstruct
@@ -59,6 +58,7 @@ public class DynamicMDB extends SpringBeanAutowiringSupport implements MessageLi
 			}
 		} catch (Exception e) {
 			LOG.severe("Error on dynamic MDB!"+ e.getMessage());
+			e.printStackTrace();
 		}
 		
 		LOG.fine("Done on dynamic MDB");	
@@ -66,11 +66,11 @@ public class DynamicMDB extends SpringBeanAutowiringSupport implements MessageLi
 
 	private void processMessage(String messageString) {
 		// TODO get the service type, call the service
-		Object responseMessageFromService = null;
-		sendResponse(responseMessageFromService);
+		
+		sendResponse(messageString);
 	}
 
-	private void sendResponse(final Object responseMessageFromService) {
+	private void sendResponse(final String responseMessageFromService) {
 		// TODO 
 		jmsTemplate.send(defaultResponseQueue, new MessageCreator() {
             public Message createMessage(Session session) throws JMSException {
@@ -89,5 +89,9 @@ public class DynamicMDB extends SpringBeanAutowiringSupport implements MessageLi
 
 	public void setResponseQueue(String outboundQueueName) {
 		this.defaultResponseQueue = outboundQueueName;
+	}
+	
+	public void setJmsTemplate(JmsTemplate jmsTemplate) {
+		this.jmsTemplate = jmsTemplate;
 	}
 }

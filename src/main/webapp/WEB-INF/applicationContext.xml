@@ -39,17 +39,17 @@
     	<constructor-arg index="0" value="${out.queue}" />
   	</bean>
   	
-	<bean id="myMessageListener" class="hu.itv.services.MyMDB" />
-	
-	<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-	    <property name="connectionFactory" ref="amqJmsQueueConnectionFactory"/>
-	    <property name="destination" ref="InQueue"/>
-	    <property name="messageListener" ref="myMessageListener" />
-	</bean>
+  	<!-- for testing purposes only -->
+<!-- 	<bean id="myMessageListener" class="hu.itv.services.MyMDB" /> -->
+<!-- 	<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"> -->
+<!-- 	    <property name="connectionFactory" ref="amqJmsQueueConnectionFactory"/> -->
+<!-- 	    <property name="destination" ref="InQueue"/> -->
+<!-- 	    <property name="messageListener" ref="myMessageListener" /> -->
+<!-- 	</bean> -->
 	
 	<util:list id="MDBListInitializator" value-type="java.lang.String">
 	    <value>SampleService;Inqueue1;Outqueue1</value>
-<!-- 	    <value>FooService2;Inqueue2;Outqueue2</value> -->
+<!-- 	    <value>SampleService;Inqueue2;Outqueue2</value> -->
 <!-- 	    <value>bar</value> -->
 	</util:list>
 
