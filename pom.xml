@@ -111,16 +111,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>SOAPJMS</groupId>
-			<artifactId>SOAPJMS-weblogic.jar</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId>
 			<version>5.13.0</version>
-<!-- 			<scope>provided</scope> -->
 		</dependency>
 		
 		<dependency>

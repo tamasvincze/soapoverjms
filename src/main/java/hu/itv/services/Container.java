@@ -52,8 +52,9 @@ public class Container {
 	
 	@PreDestroy
 	public void onExit() {
-		LOG.info("Exiting container.");
+		LOG.info("Exiting container, destroying message listeners.");
 		for(DefaultMessageListenerContainer dmlc : dmlcList) {
+			LOG.info("Destroying listener with destination name: " + dmlc.getDestinationName());
 			dmlc.stop();
 			dmlc.destroy();
 		}
@@ -61,8 +62,7 @@ public class Container {
 	
 	@PostConstruct
 	public void Init(){
-		System.out.println("===========");
-		System.out.println("Size of MDB list: " + (MDBInitConfig!=null?MDBInitConfig.size():"NULL"));
+		LOG.info("=== Size of MDB list: " + (MDBInitConfig!=null?MDBInitConfig.size():"NULL") + "===");
 		
 		dmlcList = new ArrayList<DefaultMessageListenerContainer>();
 		
@@ -76,7 +76,7 @@ public class Container {
 					String inboundQueueName = connectionElements[1];
 					String outboundQueueName = connectionElements[2];
 					
-					System.out.println("\t MDB: {" + serviceName + ", " + inboundQueueName + ", " + outboundQueueName + "}");
+					LOG.info("\tMDB: {" + serviceName + ", " + inboundQueueName + ", " + outboundQueueName + "}");
 					
 					ActiveMQQueue queueIn = new ActiveMQQueue(inboundQueueName);
 					DynamicMDB newMDB = new DynamicMDB();
@@ -84,13 +84,11 @@ public class Container {
 					newMDB.setResponseQueue(outboundQueueName);
 					newMDB.setJmsTemplate(jmsTemplate);
 					
-					
 					ConnectionFactory connectionFactory = (ConnectionFactory) appContext.getBean("amqJmsQueueConnectionFactory");
 					
 					DefaultMessageListenerContainer DMLC = new DefaultMessageListenerContainer();
 					DMLC.setConnectionFactory(connectionFactory);
 					DMLC.setDestination(queueIn); 
-					DMLC.setBeanName("jmsContainer-" + serviceName);
 					
 					DMLC.setMessageListener(newMDB);
 					
